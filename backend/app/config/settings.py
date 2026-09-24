@@ -11,6 +11,7 @@ Boundary note (core/ vs config/):
                   exception handlers, lifespan wiring).
 """
 
+import os
 from enum import Enum
 from functools import lru_cache
 from typing import List
@@ -96,12 +97,23 @@ class Settings(BaseSettings):
     # --- Sigma Rule Engine (Part 8) ---
     SIGMA_RULES_DIRECTORY: str = "sigma_rules"
 
+    @field_validator("UPLOAD_DIRECTORY", mode="before")
+    @classmethod
+    def assemble_upload_dir(cls, value: str | None) -> str:
+        if os.environ.get("VERCEL"):
+            return "/tmp/uploads/security_logs"
+        return value or "uploads/security_logs"
+
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_database_url(cls, value: str | None, info) -> str:
         """Build DATABASE_URL from discrete Postgres settings if not explicitly set."""
         if value:
+            if os.environ.get("VERCEL") and value.startswith("sqlite:///") and not value.startswith("sqlite:////tmp/"):
+                return "sqlite:////tmp/asoc.db"
             return value
+        if os.environ.get("VERCEL"):
+            return "sqlite:////tmp/asoc.db"
         data = info.data
         return (
             f"postgresql://{data.get('POSTGRES_USER')}:{data.get('POSTGRES_PASSWORD')}"

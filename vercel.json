@@ -1,0 +1,106 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "frontend": {
+      "root": "frontend",
+      "framework": "vite"
+    },
+    "backend": {
+      "root": "backend",
+      "framework": "fastapi",
+      "entrypoint": "app.main:app"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/health",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/docs",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/openapi.json",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/redoc",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/dashboard",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/alerts",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/incidents",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/detections",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/risk",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/mitre",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/web-security",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/reports",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/settings",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
+    }
+  ]
+}

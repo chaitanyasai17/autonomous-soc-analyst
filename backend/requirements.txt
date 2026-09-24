@@ -30,14 +30,8 @@ python-multipart==0.0.20
 # --- Sigma Rule Engine (Part 8) ---
 PyYAML==6.0.2
 
-# --- AI Layer (added in Part 10) ---
-# httpx
+# --- AI Layer (Part 10) ---
+httpx>=0.27.0
 
-# --- Reports (added in Part 14) ---
-# reportlab
-# pandas
-
-# --- Testing (added in Part 16) ---
-# pytest
-# pytest-asyncio
-# httpx
+# --- Reports (Part 14) ---
+reportlab>=4.0.0

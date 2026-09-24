@@ -124,7 +124,9 @@ export const WebSecurityLab: React.FC = () => {
   const [isScanning, setIsScanning] = useState(false);
 
   // Scan Launch Form
-  const [targetUrl, setTargetUrl] = useState("http://127.0.0.1:8000");
+  const [targetUrl, setTargetUrl] = useState(
+    typeof window !== "undefined" && window.location.origin ? window.location.origin : "localhost"
+  );
   const [scanProfile, setScanProfile] = useState("standard");
   const [timeoutSeconds, setTimeoutSeconds] = useState(5);
 
@@ -777,24 +779,17 @@ export const WebSecurityLab: React.FC = () => {
                 required
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
-                placeholder="e.g. 127.0.0.1:8000 or localhost"
+                placeholder="e.g. current domain, localhost, or authorized host"
                 className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
               />
               <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                 <span className="text-[10px] text-slate-400">Quick Presets:</span>
                 <button
                   type="button"
-                  onClick={() => setTargetUrl("127.0.0.1:8000")}
+                  onClick={() => setTargetUrl(typeof window !== "undefined" ? window.location.origin : "localhost")}
                   className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-[10px] font-mono text-cyan-400 hover:bg-slate-800"
                 >
-                  127.0.0.1:8000 (Backend API)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTargetUrl("127.0.0.1:5173")}
-                  className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-[10px] font-mono text-cyan-400 hover:bg-slate-800"
-                >
-                  127.0.0.1:5173 (Frontend UI)
+                  Current Deployment (Origin)
                 </button>
                 <button
                   type="button"
