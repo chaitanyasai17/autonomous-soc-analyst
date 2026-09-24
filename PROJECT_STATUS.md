@@ -43,10 +43,8 @@ The complete Autonomous SOC Analyst platform is fully verified and actively runn
 - **ReDoc API Documentation:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 - **OpenAPI JSON Schema:** [http://localhost:8000/api/v1/openapi.json](http://localhost:8000/api/v1/openapi.json)
 
-### Pre-Seeded Super Admin Credentials
-- **Username:** `admin`
-- **Password:** `Admin1234!`
-- **Assigned Role:** `super_admin`
+### Administrator Access & Authentication
+Administrator access is managed securely via environment configuration (`ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_ROLE`) or the platform's initial setup. Hardcoded credentials are strictly prohibited.
 
 ---
 

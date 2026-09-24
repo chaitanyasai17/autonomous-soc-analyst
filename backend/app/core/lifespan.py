@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
         from app.models.enums import UserRole
         from app.models.user import User
         from app.repositories.mitre_repository import MitreRepository
-        from app.security.hashing import hash_password
+        from app.security.hashing import hash_password, verify_password
 
         # Ensure database tables exist
         Base.metadata.create_all(bind=engine)
@@ -53,22 +53,36 @@ async def lifespan(app: FastAPI):
             if seeded > 0:
                 logger.info("Seeded %d MITRE ATT&CK techniques on startup.", seeded)
 
-            # Seed default admin if missing
-            admin_user = db.query(User).filter_by(username="admin").first()
-            if not admin_user:
-                admin_user = User(
-                    id=uuid.uuid4(),
-                    username="admin",
-                    email="admin@asoc.io",
-                    first_name="SOC",
-                    last_name="Administrator",
-                    role=UserRole.SUPER_ADMIN,
-                    password_hash=hash_password("Admin1234!"),
-                    is_active=True,
-                )
-                db.add(admin_user)
-                db.commit()
-                logger.info("Initialized default administrator: admin / Admin1234!")
+            # Provision administrator account if configured via environment variables
+            admin_username = settings.ADMIN_USERNAME
+            admin_password = settings.ADMIN_PASSWORD
+            if admin_username and admin_password:
+                admin_role_str = (settings.ADMIN_ROLE or "super_admin").lower()
+                try:
+                    role_enum = UserRole(admin_role_str)
+                except ValueError:
+                    role_enum = UserRole.SUPER_ADMIN
+
+                admin_user = db.query(User).filter_by(username=admin_username).first()
+                if not admin_user:
+                    admin_user = User(
+                        id=uuid.uuid4(),
+                        username=admin_username,
+                        email=getattr(settings, "ADMIN_EMAIL", "admin@asoc.io"),
+                        first_name="SOC",
+                        last_name="Administrator",
+                        role=role_enum,
+                        password_hash=hash_password(admin_password),
+                        is_active=True,
+                    )
+                    db.add(admin_user)
+                    db.commit()
+                    logger.info("Initialized administrator account for '%s' (role: %s).", admin_username, role_enum.value)
+                else:
+                    if not verify_password(admin_password, admin_user.password_hash):
+                        admin_user.password_hash = hash_password(admin_password)
+                        db.commit()
+                        logger.info("Synchronized administrator credentials for '%s' from local configuration.", admin_username)
     except Exception as err:
         logger.warning("Startup database initialization: %s", err)
 

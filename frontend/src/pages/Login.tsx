@@ -11,8 +11,8 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { success } = useToast();
 
-  const [username, setUsername] = useState<string>("admin");
-  const [password, setPassword] = useState<string>("Admin1234!");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -101,11 +101,6 @@ export const Login: React.FC = () => {
             </div>
           </div>
 
-          {/* Preset Credentials Hint */}
-          <div className="p-3 rounded-lg bg-[#030a18]/80 border border-cyan-900/30 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>Pre-seeded Super Admin:</span>
-            <span className="font-mono text-cyan-300 font-bold">admin / Admin1234!</span>
-          </div>
 
           <SOCButton
             type="submit"

@@ -67,6 +67,9 @@ Copy `.env.example` to `.env`:
 | `DATABASE_URL` | `postgresql://asoc_user:...@localhost:5432/asoc_db` | Database connection string |
 | `JWT_SECRET_KEY` | *(cryptographic string)* | HMAC-SHA256 signature key |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Access token lifespan |
+| `ADMIN_USERNAME` | `admin` | Initial administrator username |
+| `ADMIN_PASSWORD` | *(set locally)* | Initial administrator password (bcrypt hashed) |
+| `ADMIN_ROLE` | `super_admin` | Initial administrator privilege tier |
 | `AI_PROVIDER` | `heuristic` (or `ollama`, `openai`)| Threat hunter backend |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Local LLM daemon address |
 | `UPLOAD_DIRECTORY` | `uploads/security_logs` | Staged log storage |

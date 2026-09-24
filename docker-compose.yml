@@ -14,9 +14,9 @@ services:
     container_name: asoc_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: asoc_db
-      POSTGRES_USER: asoc_user
-      POSTGRES_PASSWORD: asoc_secure_password_123!
+      POSTGRES_DB: ${POSTGRES_DB:-asoc_db}
+      POSTGRES_USER: ${POSTGRES_USER:-asoc_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-locally}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -43,8 +43,8 @@ services:
       ENVIRONMENT: production
       DEBUG: "false"
       APP_NAME: "Autonomous SOC Analyst"
-      SECRET_KEY: "prod-secret-key-change-in-real-deployment-replace-me"
-      DATABASE_URL: "postgresql://asoc_user:asoc_secure_password_123!@postgres:5432/asoc_db"
+      SECRET_KEY: ${SECRET_KEY:-change-this-to-a-super-secret-hex-key-in-production}
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-asoc_user}:${POSTGRES_PASSWORD:-change-this-locally}@postgres:5432/${POSTGRES_DB:-asoc_db}"
       AI_PROVIDER: "heuristic"
       OLLAMA_BASE_URL: "http://host.docker.internal:11434"
       LOG_LEVEL: "INFO"

@@ -8,7 +8,7 @@ The platform uses **SQLAlchemy 2.0** with dual-engine compatibility:
 
 ```text
 Database URL Format:
-postgresql://asoc_user:asoc_password@localhost:5432/asoc_db
+postgresql://asoc_user:<password>@localhost:5432/asoc_db
 sqlite:///./asoc.db
 ```
 

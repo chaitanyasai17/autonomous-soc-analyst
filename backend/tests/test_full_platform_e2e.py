@@ -36,9 +36,17 @@ def run_e2e():
 
     # 2. Authenticate as Admin
     print("\n[2] Authenticating as Super Admin...")
+    admin_username = os.environ.get("ADMIN_USERNAME", "admin")
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+    if not admin_password:
+        from app.config import get_settings
+        admin_password = get_settings().ADMIN_PASSWORD
+    if not admin_password:
+        raise ValueError("ADMIN_PASSWORD must be provided via environment variable or local .env configuration.")
+
     login_res = session.post(
         f"{BASE_URL}/auth/login",
-        data={"username": "admin", "password": "Admin1234!"},
+        data={"username": admin_username, "password": admin_password},
     )
     assert login_res.status_code == 200, f"Login failed: {login_res.text}"
     token = login_res.json().get("access_token")

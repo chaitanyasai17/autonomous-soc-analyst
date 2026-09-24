@@ -1,18 +1,51 @@
-"""Integration tests for FastAPI REST API endpoints using TestClient."""
-
+import os
+import secrets
 import unittest
+import uuid
 from fastapi.testclient import TestClient
 from app.main import app
+from app.config import get_settings
+from app.database.session import SessionLocal
+from app.models.user import User
+from app.models.enums import UserRole
+from app.security.hashing import hash_password, verify_password
 
 
 class TestAPIEndpoints(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(app)
-        # Authenticate as super admin
+        settings = get_settings()
+        admin_username = settings.ADMIN_USERNAME or "admin"
+        admin_password = settings.ADMIN_PASSWORD or os.environ.get("ADMIN_PASSWORD")
+        
+        # If no password provided in settings/env, use an ephemeral test credential
+        if not admin_password:
+            admin_password = secrets.token_urlsafe(24)
+
+        # Ensure the test administrator user exists with this password hash
+        with SessionLocal() as db:
+            admin = db.query(User).filter_by(username=admin_username).first()
+            if not admin:
+                admin = User(
+                    id=uuid.uuid4(),
+                    username=admin_username,
+                    email="admin@test.local",
+                    first_name="SOC",
+                    last_name="Administrator",
+                    role=UserRole.SUPER_ADMIN,
+                    password_hash=hash_password(admin_password),
+                    is_active=True,
+                )
+                db.add(admin)
+                db.commit()
+            elif not verify_password(admin_password, admin.password_hash):
+                admin.password_hash = hash_password(admin_password)
+                db.commit()
+
         login_resp = cls.client.post(
             "/api/v1/auth/login",
-            data={"username": "admin", "password": "Admin1234!"},
+            data={"username": admin_username, "password": admin_password},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         if login_resp.status_code == 200:

@@ -63,6 +63,12 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 30
 
+    # --- Administrator Account Provisioning ---
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str | None = None
+    ADMIN_ROLE: str = "super_admin"
+    ADMIN_EMAIL: str = "admin@asoc.io"
+
     # --- Database ---
     POSTGRES_USER: str = "asoc_user"
     POSTGRES_PASSWORD: str = "changeme"

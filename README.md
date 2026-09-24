@@ -32,10 +32,26 @@ When running locally:
 - **Swagger Interactive API Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
 - **ReDoc API Documentation:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
-### Default Administrator Credentials
-- **Username:** `admin`
-- **Password:** `Admin1234!`
-- **Role:** `super_admin`
+## Authentication
+
+Authentication is required to access the SOC platform.
+Administrator credentials are configured through environment variables
+or the application's secure initialization process.
+
+Never commit production credentials, passwords, API keys, JWT secrets,
+or database credentials to the repository.
+
+### Local Administrator Configuration
+
+For local development, copy `.env.example` to `.env` and specify your credentials:
+
+```env
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=<SET_LOCALLY>
+ADMIN_ROLE=super_admin
+```
+
+When the backend initializes, the administrator account is provisioned with the password securely hashed via bcrypt.
 
 ---
 
