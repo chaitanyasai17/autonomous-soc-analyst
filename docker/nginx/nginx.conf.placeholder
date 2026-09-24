@@ -1,0 +1,5 @@
+# ==============================================================================
+# Nginx Reverse Proxy Configuration — PLACEHOLDER
+# Full reverse proxy / routing configuration for frontend + backend will be
+# implemented in Part 15 — Docker & Deployment.
+# ==============================================================================

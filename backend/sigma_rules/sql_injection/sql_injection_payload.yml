@@ -1,0 +1,37 @@
+id: 2f4a6b8c-3d5e-4f70-8192-a3b4c5d6e7f8
+title: SQL Injection Attempt in Request Payload
+description: >
+  Detects common SQL injection syntax patterns (tautologies, UNION-based
+  extraction, comment-based statement termination) appearing in a log
+  entry's message or raw content.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: high
+enabled: true
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  category: application
+detection:
+  selection:
+    message|contains:
+      - "' OR '1'='1"
+      - "' OR 1=1"
+      - 'UNION SELECT'
+      - 'union select'
+      - 'DROP TABLE'
+      - "'; --"
+      - 'xp_cmdshell'
+  condition: selection
+fields:
+  - source_ip
+  - message
+falsepositives:
+  - Security scanning tools authorized to run against the environment
+  - Application QA/test payloads containing SQL keywords
+references:
+  - https://owasp.org/www-community/attacks/SQL_Injection
+  - https://attack.mitre.org/techniques/T1190/

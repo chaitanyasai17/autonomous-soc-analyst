@@ -1,0 +1,37 @@
+id: 6d7e8f90-a1b2-4c3d-8e4f-5a6b7c8d9e0f
+title: Privilege Escalation Attempt Detected
+description: >
+  Detects command patterns and log indicators associated with local
+  privilege escalation, including sudo abuse, SUID/SGID manipulation, and
+  UAC bypass attempts.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: critical
+enabled: true
+tags:
+  - attack.privilege_escalation
+  - attack.t1548
+logsource:
+  category: endpoint
+detection:
+  selection:
+    message|contains:
+      - 'sudo su'
+      - 'chmod +s'
+      - 'chmod 4755'
+      - 'setuid'
+      - 'uac bypass'
+      - 'privilege escalation'
+      - 'runas /user:administrator'
+  condition: selection
+fields:
+  - hostname
+  - username
+  - message
+falsepositives:
+  - Legitimate system administration during authorized maintenance windows
+  - Configuration management tools intentionally setting SUID bits on approved binaries
+references:
+  - https://attack.mitre.org/techniques/T1548/

@@ -1,0 +1,41 @@
+id: 4b5c6d7e-8f90-4a1b-8c2d-3e4f5a6b7c8e
+title: Suspicious PowerShell Execution Pattern
+description: >
+  Detects PowerShell invocation patterns commonly associated with
+  obfuscated or living-off-the-land attack techniques, including encoded
+  commands, hidden windows, and in-memory download-and-execute patterns.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: high
+enabled: true
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  category: endpoint
+  product: windows
+detection:
+  selection:
+    message|contains:
+      - 'powershell -enc'
+      - 'powershell.exe -enc'
+      - '-EncodedCommand'
+      - 'IEX(New-Object'
+      - 'IEX (New-Object'
+      - 'DownloadString'
+      - '-nop -w hidden'
+      - '-noprofile -windowstyle hidden'
+      - 'Invoke-Expression'
+  condition: selection
+fields:
+  - hostname
+  - username
+  - message
+falsepositives:
+  - Legitimate administrative automation scripts using encoded commands for
+    special-character safety
+  - Approved configuration management tooling (DSC, SCCM scripts)
+references:
+  - https://attack.mitre.org/techniques/T1059/001/

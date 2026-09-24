@@ -1,0 +1,43 @@
+# ==============================================================================
+# ASOC Backend Dependencies
+# Install manually with: pip install -r requirements.txt
+# Populated incrementally as each part is implemented.
+# ==============================================================================
+
+# --- Core Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# --- Configuration & Validation ---
+pydantic==2.10.4
+pydantic-settings==2.7.1
+# Required by Pydantic's EmailStr (used in schemas/user.py, schemas/auth.py)
+email-validator==2.2.0
+
+# --- Database ---
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg2-binary==2.9.10
+
+# --- Authentication & Security foundations ---
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+# passlib 1.7.4 reads bcrypt.__about__.__version__, which bcrypt>=4.1 removed.
+# Pinned to the last compatible release to avoid a runtime hashing failure.
+bcrypt==4.0.1
+python-multipart==0.0.20
+
+# --- Sigma Rule Engine (Part 8) ---
+PyYAML==6.0.2
+
+# --- AI Layer (added in Part 10) ---
+# httpx
+
+# --- Reports (added in Part 14) ---
+# reportlab
+# pandas
+
+# --- Testing (added in Part 16) ---
+# pytest
+# pytest-asyncio
+# httpx

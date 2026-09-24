@@ -1,0 +1,9 @@
+# ==============================================================================
+# GitHub Actions CI Pipeline — PLACEHOLDER
+# Full lint/test/build pipeline will be implemented in Part 16/17.
+# ==============================================================================
+# name: CI
+# on: [push, pull_request]
+# jobs:
+#   backend-tests: ...
+#   frontend-tests: ...

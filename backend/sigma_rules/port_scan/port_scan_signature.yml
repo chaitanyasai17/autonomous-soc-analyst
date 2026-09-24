@@ -1,0 +1,36 @@
+id: 3a4b5c6d-7e8f-4a9b-8c0d-1e2f3a4b5c6d
+title: Port Scanning Tool Signature Detected
+description: >
+  Detects log entries referencing well-known port-scanning tools (nmap,
+  masscan) or generic scan terminology, which may indicate network
+  reconnaissance activity.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: medium
+enabled: true
+tags:
+  - attack.discovery
+  - attack.t1046
+logsource:
+  category: network
+detection:
+  selection:
+    message|contains:
+      - 'nmap'
+      - 'masscan'
+      - 'port scan'
+      - 'syn scan'
+      - 'stealth scan'
+  condition: selection
+fields:
+  - source_ip
+  - destination_ip
+  - destination_port
+  - protocol
+falsepositives:
+  - Authorized internal vulnerability scanning (e.g., scheduled Nessus/Qualys scans)
+  - Network monitoring tools performing legitimate service discovery
+references:
+  - https://attack.mitre.org/techniques/T1046/

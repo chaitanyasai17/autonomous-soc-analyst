@@ -1,0 +1,41 @@
+id: 8f90a1b2-c3d4-4e5f-8a6b-7c8d9e0f1a2b
+title: Local System Reconnaissance Commands Detected
+description: >
+  Detects common post-exploitation reconnaissance commands used to
+  enumerate users, groups, network configuration, and system information
+  after gaining initial access to a host.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: low
+enabled: true
+tags:
+  - attack.discovery
+  - attack.t1082
+  - attack.t1087
+logsource:
+  category: endpoint
+detection:
+  selection:
+    message|contains:
+      - 'whoami'
+      - 'net user'
+      - 'net group'
+      - 'net localgroup administrators'
+      - 'ipconfig /all'
+      - 'systeminfo'
+      - 'nslookup'
+      - 'tracert'
+      - 'arp -a'
+  condition: selection
+fields:
+  - hostname
+  - username
+  - message
+falsepositives:
+  - Routine system administration and troubleshooting
+  - Automated asset inventory/monitoring agents
+references:
+  - https://attack.mitre.org/techniques/T1082/
+  - https://attack.mitre.org/techniques/T1087/

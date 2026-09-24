@@ -1,0 +1,36 @@
+id: 8c3b1e2a-1f0a-4b6e-9c2d-1a2b3c4d5e6f
+title: Repeated Authentication Failure Indicative of Brute Force
+description: 'Detects failed authentication events against SSH, RDP, or generic login
+  services, which may indicate a brute-force credential-guessing attempt.
+
+  '
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: medium
+enabled: true
+tags:
+- attack.credential_access
+- attack.t1110
+logsource:
+  category: authentication
+detection:
+  selection_ssh:
+    event_type|contains: ssh
+    action: denied
+  selection_login:
+    event_type|contains:
+    - login
+    - auth
+    action: denied
+  condition: 1 of selection*
+fields:
+- source_ip
+- username
+- destination_port
+falsepositives:
+- A legitimate user repeatedly mistyping their password
+- Automated health checks misconfigured with stale credentials
+references:
+- https://attack.mitre.org/techniques/T1110/

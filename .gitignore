@@ -1,0 +1,92 @@
+# ==============================================================================
+# ASOC — Autonomous Security Operations Center .gitignore
+# ==============================================================================
+
+# --- Environment & Secrets ---
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.secret
+*.cert
+*.crt
+id_rsa
+id_ecdsa
+id_ed25519
+
+# --- Python (Backend) ---
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# --- Node / React (Frontend) ---
+node_modules/
+**/node_modules/
+frontend/dist/
+dist/
+frontend/build/
+build/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Database ---
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+postgres-data/
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- IDE / OS / System ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+logs/
+**/logs/
+
+# --- Uploaded / generated artifacts (runtime data, not source) ---
+backend/uploads/
+uploads/
+backend/generated_reports/
+generated_reports/
+storage/logs/
+storage/reports/
+scratch/
+**/scratch/
+

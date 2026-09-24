@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+*.py     text diff=python
+*.ts     text
+*.tsx    text
+*.json   text
+*.md     text
+
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.ico    binary
+*.pdf    binary

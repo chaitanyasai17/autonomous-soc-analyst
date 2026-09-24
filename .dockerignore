@@ -1,0 +1,21 @@
+# ==============================================================================
+# ASOC .dockerignore — keeps build contexts small once Docker builds are wired
+# up in Part 15. Applies at repo root; service-specific Dockerfiles may add
+# their own scoped .dockerignore later if needed.
+# ==============================================================================
+.git
+.github
+docs
+examples
+assets
+**/__pycache__
+**/*.pyc
+.venv
+venv
+node_modules
+frontend/dist
+frontend/build
+*.log
+.env
+.env.*
+!.env.example

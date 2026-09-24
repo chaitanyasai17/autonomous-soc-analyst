@@ -1,0 +1,36 @@
+id: 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d
+title: Cross-Site Scripting (XSS) Payload Detected
+description: >
+  Detects common XSS payload patterns such as inline script tags,
+  javascript: URIs, and event-handler-based injection attempts in a log
+  entry's message content.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: high
+enabled: true
+tags:
+  - attack.initial_access
+  - attack.t1059.007
+logsource:
+  category: application
+detection:
+  selection:
+    message|contains:
+      - '<script>'
+      - '<script '
+      - 'javascript:'
+      - 'onerror='
+      - 'onload='
+      - 'document.cookie'
+  condition: selection
+fields:
+  - source_ip
+  - message
+falsepositives:
+  - Legitimate content management systems storing user-authored HTML/JS snippets
+  - Authorized penetration testing activity
+references:
+  - https://owasp.org/www-community/attacks/xss/
+  - https://attack.mitre.org/techniques/T1059/007/

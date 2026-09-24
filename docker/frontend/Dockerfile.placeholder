@@ -1,0 +1,14 @@
+# ==============================================================================
+# Frontend Dockerfile — PLACEHOLDER
+# Full multi-stage React/Vite build (with Nginx serve stage) will be implemented
+# in Part 15 — Docker & Deployment.
+# ==============================================================================
+# FROM node:20-alpine AS build
+# WORKDIR /app
+# COPY package*.json .
+# RUN npm install
+# COPY . .
+# RUN npm run build
+#
+# FROM nginx:alpine
+# COPY --from=build /app/dist /usr/share/nginx/html

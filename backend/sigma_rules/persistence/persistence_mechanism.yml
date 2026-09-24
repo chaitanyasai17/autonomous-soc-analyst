@@ -1,0 +1,42 @@
+id: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+title: Persistence Mechanism Established
+description: >
+  Detects common persistence techniques such as scheduled task/cron
+  creation, registry Run-key modification, and new service installation,
+  excluding a known-benign nightly backup task naming convention.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: high
+enabled: true
+tags:
+  - attack.persistence
+  - attack.t1053
+  - attack.t1543
+logsource:
+  category: endpoint
+detection:
+  selection:
+    message|contains:
+      - 'schtasks /create'
+      - 'crontab -e'
+      - 'reg add hkcu\\software\\microsoft\\windows\\currentversion\\run'
+      - 'reg add hklm\\software\\microsoft\\windows\\currentversion\\run'
+      - 'new-service'
+      - '/etc/rc.local'
+      - 'startup folder'
+  filter:
+    message|contains: 'nightly_backup_job'
+  condition: selection and not filter
+fields:
+  - hostname
+  - username
+  - message
+falsepositives:
+  - Approved scheduled maintenance jobs not matching the documented naming
+    convention used in the filter above
+  - Legitimate software installers registering an autostart service
+references:
+  - https://attack.mitre.org/techniques/T1053/
+  - https://attack.mitre.org/techniques/T1543/

@@ -1,0 +1,41 @@
+id: 7b8c9d0e-1f2a-4b3c-9d4e-5f6a7b8c9d0e
+title: Reverse Shell Command Pattern Detected
+description: >
+  Detects common reverse-shell one-liners (netcat, /bin/sh redirection,
+  Python socket-based shells) frequently used to establish outbound
+  command-and-control channels after initial compromise.
+author: ASOC Security Team
+date: 2026/01/10
+modified: 2026/01/10
+status: stable
+level: critical
+enabled: true
+tags:
+  - attack.command_and_control
+  - attack.t1059
+  - attack.t1071
+logsource:
+  category: endpoint
+detection:
+  selection:
+    message|contains:
+      - 'nc -e'
+      - 'nc -e /bin/sh'
+      - '/bin/sh -i'
+      - 'bash -i >&'
+      - '0>&1'
+      - "python -c 'import socket"
+      - 'socket.socket(socket.AF_INET'
+      - 'mkfifo /tmp/'
+  condition: selection
+fields:
+  - source_ip
+  - destination_ip
+  - destination_port
+  - message
+falsepositives:
+  - Authorized red-team exercises
+  - Legitimate systems administration scripts using netcat for file transfer
+references:
+  - https://attack.mitre.org/techniques/T1059/
+  - https://gtfobins.github.io/
