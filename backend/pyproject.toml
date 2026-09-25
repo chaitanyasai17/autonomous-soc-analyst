@@ -32,7 +32,13 @@ package = false
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
-exclude = ["migrations*", "sigma_rules*", "tests*", "scratch*", "uploads*"]
+exclude = [
+    "migrations*",
+    "sigma_rules*",
+    "tests*",
+    "scratch*",
+    "uploads*"
+]
 
 [tool.vercel]
 entrypoint = "main:app"
