@@ -14,6 +14,7 @@ Boundary note (core/ vs config/):
 import os
 from enum import Enum
 from functools import lru_cache
+from pathlib import Path
 from typing import List
 
 from pydantic import AnyHttpUrl, Field, field_validator
@@ -96,6 +97,19 @@ class Settings(BaseSettings):
 
     # --- Sigma Rule Engine (Part 8) ---
     SIGMA_RULES_DIRECTORY: str = "sigma_rules"
+
+    @field_validator("SIGMA_RULES_DIRECTORY", mode="before")
+    @classmethod
+    def assemble_sigma_rules_dir(cls, value: str | None) -> str:
+        if value:
+            p = Path(value)
+            if p.is_dir():
+                return str(p)
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        candidate = base_dir / (value or "sigma_rules")
+        if candidate.is_dir():
+            return str(candidate)
+        return value or "sigma_rules"
 
     @field_validator("UPLOAD_DIRECTORY", mode="before")
     @classmethod
