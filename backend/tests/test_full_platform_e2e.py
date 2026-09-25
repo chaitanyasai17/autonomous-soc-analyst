@@ -15,10 +15,14 @@ Validates:
 - Immutable Security Audit Trail
 """
 
+import os
 import sys
 import time
 import json
-import requests
+try:
+    import requests
+except ImportError:
+    requests = None
 
 BASE_URL = "http://localhost:8000/api/v1"
 

@@ -26,6 +26,12 @@ dependencies = [
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.uv]
+package = false
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
 [tool.vercel]
 entrypoint = "main:app"
 
