@@ -5,7 +5,7 @@ import re
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Minimum 8 chars, at least one letter and one digit — a baseline check only;
 # the final password policy will be finalized alongside auth in Part 4.
-_PASSWORD_MIN_LENGTH = 8
+_PASSWORD_MIN_LENGTH = 6
 
 _MAX_FILENAME_LENGTH = 255
 _UNSAFE_FILENAME_CHARS = set('/\\\x00')
@@ -17,12 +17,8 @@ def is_valid_email(value: str) -> bool:
 
 
 def is_strong_password(value: str) -> bool:
-    """Baseline password strength check: length + letter + digit."""
-    if len(value) < _PASSWORD_MIN_LENGTH:
-        return False
-    has_letter = any(char.isalpha() for char in value)
-    has_digit = any(char.isdigit() for char in value)
-    return has_letter and has_digit
+    """Baseline password check: minimum 6 characters."""
+    return bool(value and len(value) >= _PASSWORD_MIN_LENGTH)
 
 
 def is_non_empty_string(value: str | None) -> bool:

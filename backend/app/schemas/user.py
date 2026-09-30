@@ -25,14 +25,14 @@ class UserCreate(UserBase):
     action via UserAdminUpdate, preventing privilege self-escalation at
     signup."""
 
-    password: str = Field(min_length=8, max_length=128)
+    password: str = Field(min_length=6, max_length=128)
 
     @field_validator("password")
     @classmethod
     def validate_password_strength(cls, value: str) -> str:
         if not is_strong_password(value):
             raise ValueError(
-                "Password must be at least 8 characters and include both a letter and a digit."
+                "Password must be at least 6 characters."
             )
         return value
 
@@ -64,13 +64,13 @@ class UserOut(UserBase):
 
 class PasswordChangeRequest(BaseSchema):
     current_password: str
-    new_password: str = Field(min_length=8, max_length=128)
+    new_password: str = Field(min_length=6, max_length=128)
 
     @field_validator("new_password")
     @classmethod
     def validate_password_strength(cls, value: str) -> str:
         if not is_strong_password(value):
             raise ValueError(
-                "Password must be at least 8 characters and include both a letter and a digit."
+                "Password must be at least 6 characters."
             )
         return value

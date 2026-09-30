@@ -27,14 +27,22 @@ export const Register: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await register(formData);
+      await register({
+        username: formData.username.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        first_name: formData.first_name.trim(),
+        last_name: formData.last_name.trim(),
+      });
       success("Account registered and logged in successfully.");
       navigate("/");
     } catch (err: any) {
-      setError(
+      const serverMsg =
         err.response?.data?.message ||
-          "Registration failed. Password must be >=8 chars with a letter and digit."
-      );
+        err.response?.data?.details?.[0]?.msg?.replace(/^Value error, /i, "") ||
+        err.message ||
+        "Registration failed. Please check your details and try again.";
+      setError(serverMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -135,7 +143,7 @@ export const Register: React.FC = () => {
                 required
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Min 8 chars, letter & digit"
+                placeholder="Min 6 characters"
                 className="w-full pl-9 pr-3 py-2 bg-[#030a18]/90 border border-slate-700/80 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 font-mono"
               />
             </div>
