@@ -44,7 +44,14 @@ async def lifespan(app: FastAPI):
         from app.security.hashing import hash_password, verify_password
 
         # Ensure database tables exist
-        Base.metadata.create_all(bind=engine)
+        try:
+            from app.database.session import engine as current_engine
+            Base.metadata.create_all(bind=current_engine)
+        except Exception as db_init_err:
+            logger.warning("Primary database table creation failed (%s). Falling back to local resilient SQLite storage.", db_init_err)
+            from app.database.session import fallback_to_sqlite
+            new_engine = fallback_to_sqlite()
+            Base.metadata.create_all(bind=new_engine)
 
         with SessionLocal() as db:
             # Seed MITRE catalog

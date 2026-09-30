@@ -29,13 +29,13 @@ class ForgotPasswordRequest(BaseSchema):
 
 class ResetPasswordRequest(BaseSchema):
     token: str
-    new_password: str = Field(min_length=6, max_length=128)
+    new_password: str = Field(min_length=1, max_length=128)
 
     @field_validator("new_password")
     @classmethod
     def validate_password_strength(cls, value: str) -> str:
         if not is_strong_password(value):
             raise ValueError(
-                "Password must be at least 6 characters."
+                "Password cannot be empty."
             )
         return value

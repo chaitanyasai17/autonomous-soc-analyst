@@ -142,7 +142,7 @@ class AuthService:
             raise UnauthorizedError("Current password is incorrect.")
         if not is_strong_password(new_password):
             raise ValidationFailedError(
-                "Password must be at least 6 characters."
+                "Password cannot be empty."
             )
         user.password_hash = hash_password(new_password)
         self.repository.update(user)
@@ -180,7 +180,7 @@ class AuthService:
 
         if not is_strong_password(new_password):
             raise ValidationFailedError(
-                "Password must be at least 6 characters."
+                "Password cannot be empty."
             )
         user.password_hash = hash_password(new_password)
         self.repository.update(user)

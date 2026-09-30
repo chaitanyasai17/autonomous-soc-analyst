@@ -12,6 +12,7 @@ Boundary note (core/ vs config/):
 """
 
 import os
+import tempfile
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
@@ -19,6 +20,24 @@ from typing import List
 
 from pydantic import AnyHttpUrl, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _is_cloud_environment() -> bool:
+    return bool(
+        os.environ.get("VERCEL")
+        or os.environ.get("VERCEL_ENV")
+        or os.environ.get("VERCEL_URL")
+        or os.environ.get("VERCEL_REGION")
+        or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
+        or os.environ.get("AWS_EXECUTION_ENV")
+        or os.environ.get("LAMBDA_TASK_ROOT")
+        or os.environ.get("NOW_REGION")
+    )
+
+
+def _get_temp_sqlite_url() -> str:
+    db_path = Path(tempfile.gettempdir()).resolve() / "asoc.db"
+    return f"sqlite:///{db_path.as_posix()}"
 
 
 class Environment(str, Enum):
@@ -114,24 +133,35 @@ class Settings(BaseSettings):
     @field_validator("UPLOAD_DIRECTORY", mode="before")
     @classmethod
     def assemble_upload_dir(cls, value: str | None) -> str:
-        if os.environ.get("VERCEL"):
-            return "/tmp/uploads/security_logs"
+        if _is_cloud_environment():
+            tmp_upload = Path(tempfile.gettempdir()).resolve() / "uploads" / "security_logs"
+            tmp_upload.mkdir(parents=True, exist_ok=True)
+            return str(tmp_upload)
         return value or "uploads/security_logs"
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_database_url(cls, value: str | None, info) -> str:
         """Build DATABASE_URL from discrete Postgres settings if not explicitly set."""
+        temp_sqlite = _get_temp_sqlite_url()
         if value:
-            if os.environ.get("VERCEL") and value.startswith("sqlite:///") and not value.startswith("sqlite:////tmp/"):
-                return "sqlite:////tmp/asoc.db"
+            if value.startswith("postgres://"):
+                value = value.replace("postgres://", "postgresql://", 1)
+            if _is_cloud_environment() and value.startswith("sqlite:///") and not value.startswith("sqlite:////tmp/"):
+                return temp_sqlite
             return value
-        if os.environ.get("VERCEL"):
-            return "sqlite:////tmp/asoc.db"
+
+        if _is_cloud_environment():
+            return temp_sqlite
+
         data = info.data
+        host = data.get("POSTGRES_HOST", "localhost")
+        if _is_cloud_environment() and host in ("localhost", "127.0.0.1", "0.0.0.0"):
+            return temp_sqlite
+
         return (
             f"postgresql://{data.get('POSTGRES_USER')}:{data.get('POSTGRES_PASSWORD')}"
-            f"@{data.get('POSTGRES_HOST')}:{data.get('POSTGRES_PORT')}/{data.get('POSTGRES_DB')}"
+            f"@{host}:{data.get('POSTGRES_PORT')}/{data.get('POSTGRES_DB')}"
         )
 
     @property

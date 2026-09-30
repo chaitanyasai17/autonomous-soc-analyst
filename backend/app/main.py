@@ -37,6 +37,12 @@ app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 app.include_router(api_router, prefix="/api", include_in_schema=False)
 
 
+@app.get("/", include_in_schema=False)
+def root_index():
+    return {"message": f"{API_TITLE} is online", "status": "ok", "version": API_VERSION}
+
+
+
 @app.get("/api/docs", include_in_schema=False)
 def api_docs():
     from fastapi.openapi.docs import get_swagger_ui_html

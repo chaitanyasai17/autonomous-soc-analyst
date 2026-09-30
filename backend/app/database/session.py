@@ -12,11 +12,16 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import get_settings
 
+import tempfile
+from pathlib import Path
+
 settings = get_settings()
 
 connect_args = {}
 if settings.DATABASE_URL and settings.DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
+elif settings.DATABASE_URL and "postgresql" in settings.DATABASE_URL:
+    connect_args = {"connect_timeout": 3}
 
 # `pool_pre_ping` avoids handing out stale/dead connections after DB restarts.
 engine: Engine = create_engine(
@@ -32,6 +37,21 @@ SessionLocal = sessionmaker(
     autoflush=False,
     future=True,
 )
+
+
+def fallback_to_sqlite() -> Engine:
+    """Dynamically switch engine and SessionLocal to temporary SQLite storage."""
+    global engine, SessionLocal
+    db_path = Path(tempfile.gettempdir()).resolve() / "asoc.db"
+    temp_url = f"sqlite:///{db_path.as_posix()}"
+    engine = create_engine(
+        temp_url,
+        pool_pre_ping=True,
+        connect_args={"check_same_thread": False},
+        future=True,
+    )
+    SessionLocal.configure(bind=engine)
+    return engine
 
 
 def get_db_session() -> Session:
