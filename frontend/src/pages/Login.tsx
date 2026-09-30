@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await login(username, password);
+      await login(username.trim(), password);
       success("Authenticated successfully. Welcome to Autonomous SOC Analyst.");
       navigate("/");
     } catch (err: any) {

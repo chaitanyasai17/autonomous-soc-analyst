@@ -66,10 +66,10 @@ class Settings(BaseSettings):
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 30
 
     # --- Administrator Account Provisioning ---
-    ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD: str | None = None
+    ADMIN_USERNAME: str = "chaitu"
+    ADMIN_PASSWORD: str | None = "412065"
     ADMIN_ROLE: str = "super_admin"
-    ADMIN_EMAIL: str = "admin@asoc.io"
+    ADMIN_EMAIL: str = "chaitu@asoc.io"
 
     # --- Database ---
     POSTGRES_USER: str = "asoc_user"

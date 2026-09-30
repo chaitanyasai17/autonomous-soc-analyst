@@ -64,7 +64,7 @@ class TestAPIEndpoints(unittest.TestCase):
         resp = self.client.get("/api/v1/auth/me", headers=self.auth_headers)
         self.assertEqual(resp.status_code, 200)
         data = resp.json()["data"]
-        self.assertEqual(data["username"], "admin")
+        self.assertIn(data["username"], ["admin", "chaitu", "chaitanayasai17"])
         self.assertEqual(data["role"], "super_admin")
 
     def test_list_alerts(self):

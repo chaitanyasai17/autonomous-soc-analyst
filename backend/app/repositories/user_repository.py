@@ -34,8 +34,12 @@ class UserRepository(BaseRepository[User]):
         return self.db.execute(stmt).scalar_one_or_none()
 
     def get_by_username_or_email(self, identifier: str) -> User | None:
+        clean_id = (identifier or "").strip().lower()
         stmt = select(User).where(
-            or_(User.username == identifier, User.email == identifier),
+            or_(
+                func.lower(User.username) == clean_id,
+                func.lower(User.email) == clean_id,
+            ),
             User.deleted_at.is_(None),
         )
         return self.db.execute(stmt).scalar_one_or_none()

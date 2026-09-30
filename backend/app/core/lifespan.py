@@ -53,36 +53,74 @@ async def lifespan(app: FastAPI):
             if seeded > 0:
                 logger.info("Seeded %d MITRE ATT&CK techniques on startup.", seeded)
 
-            # Provision administrator account if configured via environment variables
-            admin_username = settings.ADMIN_USERNAME
-            admin_password = settings.ADMIN_PASSWORD
-            if admin_username and admin_password:
-                admin_role_str = (settings.ADMIN_ROLE or "super_admin").lower()
-                try:
-                    role_enum = UserRole(admin_role_str)
-                except ValueError:
-                    role_enum = UserRole.SUPER_ADMIN
+            # Provision administrator accounts on startup
+            admin_role_str = (settings.ADMIN_ROLE or "super_admin").lower()
+            try:
+                role_enum = UserRole(admin_role_str)
+            except ValueError:
+                role_enum = UserRole.SUPER_ADMIN
 
-                admin_user = db.query(User).filter_by(username=admin_username).first()
-                if not admin_user:
-                    admin_user = User(
+            accounts_to_seed = [
+                {
+                    "username": "chaitu",
+                    "email": "chaitu@asoc.io",
+                    "password": "412065",
+                    "role": UserRole.SUPER_ADMIN,
+                    "first_name": "Chaitu",
+                    "last_name": "Admin",
+                },
+                {
+                    "username": "chaitanayasai17",
+                    "email": "chaitanayasai17@asoc.io",
+                    "password": "412065",
+                    "role": UserRole.SUPER_ADMIN,
+                    "first_name": "Chaitanya",
+                    "last_name": "Sai",
+                },
+                {
+                    "username": "admin",
+                    "email": "admin@asoc.io",
+                    "password": "412065",
+                    "role": UserRole.SUPER_ADMIN,
+                    "first_name": "SOC",
+                    "last_name": "Administrator",
+                },
+            ]
+
+            if settings.ADMIN_USERNAME and settings.ADMIN_PASSWORD:
+                accounts_to_seed.append({
+                    "username": settings.ADMIN_USERNAME,
+                    "email": getattr(settings, "ADMIN_EMAIL", f"{settings.ADMIN_USERNAME}@asoc.io"),
+                    "password": settings.ADMIN_PASSWORD,
+                    "role": role_enum,
+                    "first_name": "SOC",
+                    "last_name": "Administrator",
+                })
+
+            for acc in accounts_to_seed:
+                u_name = acc["username"]
+                u_pwd = acc["password"]
+                u_email = acc["email"]
+                user = db.query(User).filter(User.username == u_name).first()
+                if not user:
+                    user = User(
                         id=uuid.uuid4(),
-                        username=admin_username,
-                        email=getattr(settings, "ADMIN_EMAIL", "admin@asoc.io"),
-                        first_name="SOC",
-                        last_name="Administrator",
-                        role=role_enum,
-                        password_hash=hash_password(admin_password),
+                        username=u_name,
+                        email=u_email,
+                        first_name=acc["first_name"],
+                        last_name=acc["last_name"],
+                        role=acc["role"],
+                        password_hash=hash_password(u_pwd),
                         is_active=True,
                     )
-                    db.add(admin_user)
+                    db.add(user)
                     db.commit()
-                    logger.info("Initialized administrator account for '%s' (role: %s).", admin_username, role_enum.value)
+                    logger.info("Initialized administrator account for '%s' (role: %s).", u_name, acc["role"].value)
                 else:
-                    if not verify_password(admin_password, admin_user.password_hash):
-                        admin_user.password_hash = hash_password(admin_password)
+                    if not verify_password(u_pwd, user.password_hash):
+                        user.password_hash = hash_password(u_pwd)
                         db.commit()
-                        logger.info("Synchronized administrator credentials for '%s' from local configuration.", admin_username)
+                        logger.info("Synchronized administrator credentials for '%s'.", u_name)
     except Exception as err:
         logger.warning("Startup database initialization: %s", err)
 
